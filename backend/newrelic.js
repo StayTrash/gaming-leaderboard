@@ -1,8 +1,8 @@
 'use strict'
 
 exports.config = {
-  app_name: ['Leaderboard Backend'],
-  license_key: '60a5adf33037c4e059e3e782b05c25dfFFFFNRAL',
+  app_name: [process.env.NEW_RELIC_APP_NAME || 'Leaderboard Backend'],
+  license_key: process.env.NEW_RELIC_LICENSE_KEY || '',
   logging: {
     level: 'info'
   }

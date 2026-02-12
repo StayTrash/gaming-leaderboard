@@ -19,10 +19,11 @@ Create `backend/.env` (or set in shell):
 DB_PASSWORD=your_postgres_password
 ```
 
-Optional for New Relic (recommended instead of hardcoding in `newrelic.js`):
+Optional for New Relic (recommended; see [docs/NEWRELIC_SETUP.md](docs/NEWRELIC_SETUP.md) for full setup):
 
 ```env
-NEW_RELIC_LICENSE_KEY=your_new_relic_license_key
+NEW_RELIC_LICENSE_KEY=your_40_char_license_key
+NEW_RELIC_APP_NAME=Leaderboard Backend
 ```
 
 Backend expects:
@@ -95,6 +96,18 @@ python load_test.py
 
 This script repeatedly picks a random user ID, submits a score, fetches the top 10 and that user's rank, then sleeps 0.5–2 seconds. Set `MAX_USER_ID` in `load_test.py` to match your seed: **10000** for `seed-small.sql`, **1000000** for full `seed.sql`. Use it to generate load for New Relic and to verify performance.
 
+### Tests (backend)
+
+Ensure PostgreSQL and Redis are running and the database is seeded (e.g. `seed-small.sql` so user 1 exists). Then:
+
+```bash
+cd backend
+npm install
+npm test
+```
+
+Runs Jest tests for the three leaderboard APIs (GET /top, POST /submit, GET /rank/:userId). Use `npm run test:watch` for watch mode.
+
 ## API Endpoints
 
 | Method | Endpoint | Description |
@@ -111,6 +124,7 @@ This script repeatedly picks a random user ID, submits a score, fetches the top 
 - **client/** — Next.js app (React), live leaderboard + rank lookup
 - **scripts/** — DB schema, seed (full + small), indexes
 - **load_test.py** — Load simulation script
+- **docs/** — [HLD](docs/HLD.md) (High-Level Design), [LLD](docs/LLD.md) (Low-Level Design), [how to write HLD/LLD](docs/HLD_LLD_GUIDE.md), [New Relic setup](docs/NEWRELIC_SETUP.md)
 
 ## Performance & Monitoring
 
@@ -118,7 +132,3 @@ This script repeatedly picks a random user ID, submits a score, fetches the top 
 - **Indexes:** `leaderboard(total_score DESC)` and `game_sessions(user_id)` for fast queries.
 - **Transactions:** Score submit updates `game_sessions` and `leaderboard` in a single transaction.
 - **New Relic:** Configured in `backend/newrelic.js`. Run under load and use the New Relic dashboard for latency, bottlenecks, and alerts.
-
-## License
-
-ISC

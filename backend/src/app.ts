@@ -19,12 +19,15 @@ app.use(express.json());
 /*
   🔹 2️⃣ Rate Limiting Middleware
   Prevents abuse & protects server from too many requests.
+  Skipped in test so tests don't hit 429.
 */
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute window
   max: 200,            // max 200 requests per IP per minute
 });
-app.use(limiter);
+if (process.env.NODE_ENV !== 'test') {
+  app.use(limiter);
+}
 
 /*
   🔹 3️⃣ Routes

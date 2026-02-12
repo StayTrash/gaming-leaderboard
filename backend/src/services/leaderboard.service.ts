@@ -48,12 +48,16 @@ export async function submitScoreService(
     if (!userId) {
       throw new Error("User ID is required");
     }
-  
+
     const result = await getPlayerRank(userId);
-  
+
     if (!result) {
       throw new Error("User not found in leaderboard");
     }
-  
-    return result;
+
+    // pg returns bigint/numeric as strings; ensure JSON has numbers
+    return {
+      rank: Number(result.rank),
+      total_score: Number(result.total_score),
+    };
   }
