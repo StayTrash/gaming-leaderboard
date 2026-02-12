@@ -91,6 +91,7 @@ A **Gaming Leaderboard** system that allows:
 ### 3.5 New Relic
 
 - **Responsibilities:** Instrumentation, transaction tracing, latency and throughput visibility.
+- **Screenshots:** Dashboard and performance report with screenshots are in [Performance & New Relic](PERFORMANCE_NEWRELIC.md); images live in `newrelic/`.
 
 ---
 

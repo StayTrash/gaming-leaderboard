@@ -124,11 +124,11 @@ Runs Jest tests for the three leaderboard APIs (GET /top, POST /submit, GET /ran
 - **client/** — Next.js app (React), live leaderboard + rank lookup
 - **scripts/** — DB schema, seed (full + small), indexes
 - **load_test.py** — Load simulation script
-- **docs/** — [HLD](docs/HLD.md), [LLD](docs/LLD.md), [System Design Diagrams](docs/SYSTEM_DESIGN_DIAGRAMS.md), [how to write HLD/LLD](docs/HLD_LLD_GUIDE.md), [New Relic setup](docs/NEWRELIC_SETUP.md)
+- **docs/** — [HLD](docs/HLD.md), [LLD](docs/LLD.md), [System Design Diagrams](docs/SYSTEM_DESIGN_DIAGRAMS.md), [Performance & New Relic screenshots](docs/PERFORMANCE_NEWRELIC.md)
 
 ## Performance & Monitoring
 
 - **Caching:** GET `/api/leaderboard/top` is cached in Redis (10s TTL); cache is invalidated on score submit.
 - **Indexes:** `leaderboard(total_score DESC)` and `game_sessions(user_id)` for fast queries.
 - **Transactions:** Score submit updates `game_sessions` and `leaderboard` in a single transaction.
-- **New Relic:** Configured in `backend/newrelic.js`. Run under load and use the New Relic dashboard for latency, bottlenecks, and alerts.
+- **New Relic:** Configured in `backend/newrelic.js`. Run under load and use the New Relic dashboard for latency, bottlenecks, and alerts. **Screenshots:** see [docs/PERFORMANCE_NEWRELIC.md](docs/PERFORMANCE_NEWRELIC.md) (uses images in `newrelic/`).
