@@ -14,18 +14,18 @@ High-level view: who uses the system and what external systems the backend depen
 ```mermaid
 flowchart TB
     subgraph Clients["Clients"]
-        Browser["Browser\n(Next.js UI)"]
-        LoadTest["Load Test\n(Python + requests)"]
-        ApiConsumer["API Consumers\n(any HTTP client)"]
+        Browser["Browser<br/>(Next.js UI)"]
+        LoadTest["Load Test<br/>(Python + requests)"]
+        ApiConsumer["API Consumers<br/>(any HTTP client)"]
     end
 
     subgraph Backend["Backend — Express :8000"]
-        API["REST API\nCORS · JSON · Rate Limit 200/min\nNew Relic APM"]
+        API["REST API<br/>CORS · JSON · Rate Limit 200/min<br/>New Relic APM"]
     end
 
     subgraph Data["Data Stores"]
-        PG[("PostgreSQL\nleaderboard DB")]
-        Redis[("Redis\ncache")]
+        PG[("PostgreSQL<br/>leaderboard DB")]
+        Redis[("Redis<br/>cache")]
     end
 
     subgraph Monitoring["Monitoring"]
@@ -73,8 +73,8 @@ flowchart TB
     end
 
     subgraph Config["Config"]
-        DBConfig["db.ts\n(pool)"]
-        RedisConfig["redis.ts\n(client)"]
+        DBConfig["db.ts<br/>(pool)"]
+        RedisConfig["redis.ts<br/>(client)"]
     end
 
     subgraph External["External"]
@@ -342,13 +342,13 @@ flowchart TB
     end
 
     subgraph Redis["Redis"]
-        K1["leaderboard:top10\n(TTL 10s)"]
+        K1["leaderboard:top10<br/>(TTL 10s)"]
     end
 
     subgraph BackendUsage["Used by"]
-        URepo[user.repository\n→ users]
-        LRepo[leaderboard.repository\n→ game_sessions, leaderboard]
-        LService[leaderboard.service\n→ get/set/del top10]
+        URepo["user.repository<br/>→ users"]
+        LRepo["leaderboard.repository<br/>→ game_sessions, leaderboard"]
+        LService["leaderboard.service<br/>→ get/set/del top10"]
     end
 
     URepo --> T1
@@ -371,12 +371,12 @@ How the Next.js client uses the API.
 flowchart LR
     subgraph NextJS["Next.js Client (port 3000)"]
         Page[page.tsx]
-        LB["GET /api/leaderboard/top\n(initial load + every 5s)"]
-        Rank["GET /api/leaderboard/rank/:id\n(on demand)"]
-        Submit["POST /api/leaderboard/submit\n(on form submit)"]
+        LB["GET /api/leaderboard/top<br/>(initial load + every 5s)"]
+        Rank["GET /api/leaderboard/rank/:id<br/>(on demand)"]
+        Submit["POST /api/leaderboard/submit<br/>(on form submit)"]
     end
 
-    API["Backend API\nlocalhost:8000"]
+    API["Backend API<br/>localhost:8000"]
 
     Page --> LB
     Page --> Rank
