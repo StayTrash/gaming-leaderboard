@@ -4,7 +4,7 @@ A leaderboard system for tracking player scores: submit scores, view top 10, and
 
 ## Demo & Screenshots
 
-**Demo video:** Host the demo locally (e.g. `gaming-leaderboard-demo.mp4`) or upload to YouTube / Google Drive and add the link here. The repo does not include the video (GitHub file size limit). Suggested: upload as unlisted, then paste the link below.
+**Demo video:** https://drive.google.com/file/d/1-42ulj0J9ss31yWOHstAERltJy4FD0MY/view?usp=sharing
 
 **New Relic (under load):**
 
