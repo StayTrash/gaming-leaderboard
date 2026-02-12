@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 
 import userRoutes from "./routes/user.routes";
 import leaderboardRoutes from "./routes/leaderboard.routes";
@@ -15,16 +16,15 @@ app.use(cors());
 */
 app.use(express.json());
 
-// /*
-//   🔹 2️⃣ Rate Limiting Middleware
-//   Prevents abuse & protects server from too many requests.
-// */
-// const limiter = rateLimit({
-//   windowMs: 60 * 1000, // 1 minute window
-//   max: 100,            // max 100 requests per IP per minute
-// });
-
-// app.use(limiter);
+/*
+  🔹 2️⃣ Rate Limiting Middleware
+  Prevents abuse & protects server from too many requests.
+*/
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute window
+  max: 200,            // max 200 requests per IP per minute
+});
+app.use(limiter);
 
 /*
   🔹 3️⃣ Routes

@@ -21,6 +21,5 @@ async function startServer() {
       console.error("Startup failed", error);
     }
   }
-``  
 
 startServer();
