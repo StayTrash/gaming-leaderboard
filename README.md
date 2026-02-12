@@ -124,7 +124,7 @@ Runs Jest tests for the three leaderboard APIs (GET /top, POST /submit, GET /ran
 - **client/** — Next.js app (React), live leaderboard + rank lookup
 - **scripts/** — DB schema, seed (full + small), indexes
 - **load_test.py** — Load simulation script
-- **docs/** — [HLD](docs/HLD.md) (High-Level Design), [LLD](docs/LLD.md) (Low-Level Design), [System Design Diagrams](docs/SYSTEM_DESIGN_DIAGRAMS.md) (components, flows, what-uses-what), [how to write HLD/LLD](docs/HLD_LLD_GUIDE.md), [New Relic setup](docs/NEWRELIC_SETUP.md)
+- **docs/** — [HLD](docs/HLD.md), [LLD](docs/LLD.md), [System Design Diagrams](docs/SYSTEM_DESIGN_DIAGRAMS.md), [how to write HLD/LLD](docs/HLD_LLD_GUIDE.md), [New Relic setup](docs/NEWRELIC_SETUP.md)
 
 ## Performance & Monitoring
 
