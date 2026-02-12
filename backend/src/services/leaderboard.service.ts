@@ -1,5 +1,5 @@
 import { submitScoreTransaction } from "../repositories/leaderboard.repository";
-import { getTopPlayers } from "../repositories/leaderboard.repository";
+import { getTopPlayers, getPlayerRank } from "../repositories/leaderboard.repository";
 
 export async function submitScoreService(
   userId: number,
@@ -20,4 +20,18 @@ export async function submitScoreService(
 
 export async function getTopPlayersService() {
     return await getTopPlayers();
+  }
+
+  export async function getPlayerRankService(userId: number) {
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+  
+    const result = await getPlayerRank(userId);
+  
+    if (!result) {
+      throw new Error("User not found in leaderboard");
+    }
+  
+    return result;
   }
