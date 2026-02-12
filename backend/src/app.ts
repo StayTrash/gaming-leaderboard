@@ -1,8 +1,10 @@
 import express from "express";
+import userRoutes from "./routes/user.routes";
 
 const app = express();
 
-// Middleware to parse JSON
 app.use(express.json());
+
+app.use("/api/users", userRoutes);
 
 export default app;
