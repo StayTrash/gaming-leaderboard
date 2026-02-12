@@ -1,11 +1,13 @@
 import express from "express";
-// import rateLimit from "express-rate-limit";
+import cors from "cors";
 
 import userRoutes from "./routes/user.routes";
 import leaderboardRoutes from "./routes/leaderboard.routes";
 import { errorHandler } from "./middleware/error.middleware";
 
 const app = express();
+
+app.use(cors());
 
 /*
   🔹 1️⃣ Middleware: Parse JSON
