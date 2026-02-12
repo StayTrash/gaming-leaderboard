@@ -35,3 +35,17 @@ export async function submitScoreTransaction(
     client.release();
   }
 }
+
+export async function getTopPlayers() {
+    const query = `
+      SELECT user_id, total_score
+      FROM leaderboard
+      ORDER BY total_score DESC
+      LIMIT 10
+    `;
+  
+    const result = await pool.query(query);
+  
+    return result.rows;
+  }
+  

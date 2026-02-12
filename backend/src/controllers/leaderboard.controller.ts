@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { submitScoreService } from "../services/leaderboard.service";
+import { getTopPlayersService } from "../services/leaderboard.service";
 
 export async function submitScore(req: Request, res: Response) {
   try {
@@ -18,3 +19,19 @@ export async function submitScore(req: Request, res: Response) {
     });
   }
 }
+
+export async function getTopPlayers(req: Request, res: Response) {
+    try {
+      const players = await getTopPlayersService();
+  
+      res.status(200).json({
+        success: true,
+        data: players,
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch leaderboard",
+      });
+    }
+  }

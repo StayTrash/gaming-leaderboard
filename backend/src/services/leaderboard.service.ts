@@ -1,4 +1,5 @@
 import { submitScoreTransaction } from "../repositories/leaderboard.repository";
+import { getTopPlayers } from "../repositories/leaderboard.repository";
 
 export async function submitScoreService(
   userId: number,
@@ -16,3 +17,7 @@ export async function submitScoreService(
 
   return { message: "Score submitted successfully" };
 }
+
+export async function getTopPlayersService() {
+    return await getTopPlayers();
+  }
