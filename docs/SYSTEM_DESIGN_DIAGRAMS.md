@@ -1,6 +1,9 @@
 # System Design Diagrams — Gaming Leaderboard
 
-This document contains system design diagrams showing **what uses what** and **all flows** for the Gaming Leaderboard project. Diagrams are in [Mermaid](https://mermaid.js.org/) format and render in GitHub, VS Code, and many doc viewers.
+This document contains system design diagrams showing **what uses what** and **all flows** for the Gaming Leaderboard project. The diagrams match the actual codebase (routes, controllers, services, repositories in `backend/src/`). They are in [Mermaid](https://mermaid.js.org/) format and render in GitHub, VS Code, and many doc viewers.
+
+**Quick navigation:**  
+[1. System Context](#1-system-context-what-uses-what) · [2. Backend Components](#2-backend-component-diagram-what-uses-what-inside-backend) · [3. API → Layers](#3-api-endpoints-and-their-layers) · [4. Submit Score](#4-flow-submit-score) · [5. Get Top 10](#5-flow-get-top-10-cache-through) · [6. Get Rank](#6-flow-get-player-rank) · [7. Create User](#7-flow-create-user) · [8. Health](#8-flow-health-check) · [9. Data Stores](#9-data-store-usage-overview) · [10. Frontend](#10-frontend--backend-flow-ui) · [11. Summary Table](#11-all-flows-summary-table)
 
 ---
 
@@ -172,16 +175,16 @@ sequenceDiagram
     participant Controller
     participant Service
     participant LeaderboardRepo
-    participant UserRepo
     participant PG as PostgreSQL
     participant Redis
 
     Client->>Routes: POST /api/leaderboard/submit { user_id, score }
     Routes->>Controller: submitScore(req, res)
-    Controller->>Controller: validate body (user_id, score ≥ 0)
-    Controller->>Service: submitScore(userId, score)
+    Controller->>Controller: validate body (user_id, score are numbers)
+    Controller->>Service: submitScoreService(userId, score)
 
-    Service->>LeaderboardRepo: submitScoreInTransaction(userId, score)
+    Service->>Service: validate required, score ≥ 0
+    Service->>LeaderboardRepo: submitScoreTransaction(userId, score)
     LeaderboardRepo->>PG: BEGIN
     LeaderboardRepo->>PG: INSERT game_sessions (user_id, score, game_mode)
     LeaderboardRepo->>PG: UPSERT leaderboard (total_score += score)
@@ -197,8 +200,8 @@ sequenceDiagram
 ```
 
 **Summary:**
-- Request is validated in the controller, then the service runs a **single DB transaction**: insert `game_sessions`, upsert `leaderboard`.
-- After commit, the service **invalidates** the Redis key `leaderboard:top10` so the next “top 10” read is fresh.
+- **Controller** validates that `user_id` and `score` are numbers; **service** validates they are present and `score ≥ 0`. Then the service runs a **single DB transaction** via `submitScoreTransaction`: insert `game_sessions`, upsert `leaderboard`.
+- After commit, the service **invalidates** Redis key `leaderboard:top10` so the next top-10 read is fresh.
 
 ---
 
@@ -216,7 +219,7 @@ sequenceDiagram
     participant PG as PostgreSQL
 
     Client->>Controller: GET /api/leaderboard/top
-    Controller->>Service: getTopPlayers()
+    Controller->>Service: getTopPlayersService()
 
     Service->>Redis: get("leaderboard:top10")
     alt Cache HIT
@@ -226,7 +229,7 @@ sequenceDiagram
     else Cache MISS
         Redis-->>Service: null
         Service->>LeaderboardRepo: getTopPlayers()
-        LeaderboardRepo->>PG: SELECT ... ORDER BY total_score DESC LIMIT 10
+        LeaderboardRepo->>PG: SELECT user_id, total_score ... ORDER BY total_score DESC LIMIT 10
         PG-->>LeaderboardRepo: rows
         LeaderboardRepo-->>Service: rows
         Service->>Redis: set("leaderboard:top10", JSON, EX 10)
@@ -254,9 +257,9 @@ sequenceDiagram
 
     Client->>Controller: GET /api/leaderboard/rank/:userId
     Controller->>Controller: parse & validate userId
-    Controller->>Service: getRankByUserId(userId)
+    Controller->>Service: getPlayerRankService(userId)
 
-    Service->>LeaderboardRepo: getRankByUserId(userId)
+    Service->>LeaderboardRepo: getPlayerRank(userId)
     LeaderboardRepo->>PG: SELECT rank (COUNT), total_score FROM leaderboard WHERE user_id = $1
     PG-->>LeaderboardRepo: row or empty
     LeaderboardRepo-->>Service: { rank, total_score } or null
@@ -291,7 +294,7 @@ sequenceDiagram
     Client->>Routes: POST /api/users { username }
     Routes->>Controller: createUser(req, res)
     Controller->>Controller: validate body (username)
-    Controller->>Service: createUser(username)
+    Controller->>Service: createUserService(username)
 
     Service->>UserRepo: createUser(username)
     UserRepo->>PG: INSERT INTO users (username) VALUES ($1)
@@ -368,7 +371,7 @@ How the Next.js client uses the API.
 flowchart LR
     subgraph NextJS["Next.js Client (port 3000)"]
         Page[page.tsx]
-        LB["GET /api/leaderboard/top\n(poll / refresh)"]
+        LB["GET /api/leaderboard/top\n(initial load + every 5s)"]
         Rank["GET /api/leaderboard/rank/:id\n(on demand)"]
         Submit["POST /api/leaderboard/submit\n(on form submit)"]
     end
@@ -384,7 +387,7 @@ flowchart LR
 ```
 
 **Summary:**
-- Single page uses three API operations: **top** (leaderboard list), **rank** (for a chosen user), **submit** (score form). All go to the same backend base URL (e.g. `NEXT_PUBLIC_API_URL` or `http://localhost:8000`).
+- Single page (`client/app/page.tsx`) uses three API operations: **top** (loaded on mount and refreshed every 5s), **rank** (when user enters an ID and requests rank), **submit** (when user submits the score form). All use the same backend base URL (`NEXT_PUBLIC_API_URL` or `http://localhost:8000`).
 
 ---
 
