@@ -1,0 +1,37 @@
+import { pool } from "../config/db";
+
+export async function submitScoreTransaction(
+  userId: number,
+  score: number
+) {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    // 1️⃣ Insert game session
+    await client.query(
+      `INSERT INTO game_sessions (user_id, score, game_mode)
+       VALUES ($1, $2, 'solo')`,
+      [userId, score]
+    );
+
+    // 2️⃣ Update leaderboard using UPSERT
+    await client.query(
+      `INSERT INTO leaderboard (user_id, total_score)
+       VALUES ($1, $2)
+       ON CONFLICT (user_id)
+       DO UPDATE
+       SET total_score = leaderboard.total_score + EXCLUDED.total_score`,
+      [userId, score]
+    );
+
+    await client.query("COMMIT");
+
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+}
