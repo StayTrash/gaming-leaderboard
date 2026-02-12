@@ -13,16 +13,16 @@ const app = express();
 */
 app.use(express.json());
 
-/*
-  🔹 2️⃣ Rate Limiting Middleware
-  Prevents abuse & protects server from too many requests.
-*/
-const limiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute window
-  max: 100,            // max 100 requests per IP per minute
-});
+// /*
+//   🔹 2️⃣ Rate Limiting Middleware
+//   Prevents abuse & protects server from too many requests.
+// */
+// const limiter = rateLimit({
+//   windowMs: 60 * 1000, // 1 minute window
+//   max: 100,            // max 100 requests per IP per minute
+// });
 
-app.use(limiter);
+// app.use(limiter);
 
 /*
   🔹 3️⃣ Routes
