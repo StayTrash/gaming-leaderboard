@@ -2,6 +2,18 @@
 
 A leaderboard system for tracking player scores: submit scores, view top 10, and check a player's rank. Built with Express (backend), Next.js (frontend), PostgreSQL, Redis, and New Relic for monitoring.
 
+## Demo & Screenshots
+
+**Demo video:** Host the demo locally (e.g. `gaming-leaderboard-demo.mp4`) or upload to YouTube / Google Drive and add the link here. The repo does not include the video (GitHub file size limit). Suggested: upload as unlisted, then paste the link below.
+
+**New Relic (under load):**
+
+| Overview | Transactions / Latency | Database & Bottlenecks |
+|----------|-------------------------|-------------------------|
+| ![New Relic Overview](newrelic/image1.png) | ![New Relic Transactions](newrelic/image2.png) | ![New Relic Database](newrelic/image3.png) |
+
+More details and captions: [docs/PERFORMANCE_NEWRELIC.md](docs/PERFORMANCE_NEWRELIC.md).
+
 ## Prerequisites
 
 - **Node.js** (v18+)
