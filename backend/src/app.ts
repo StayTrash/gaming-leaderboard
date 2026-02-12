@@ -1,5 +1,5 @@
 import express from "express";
-import rateLimit from "express-rate-limit";
+// import rateLimit from "express-rate-limit";
 
 import userRoutes from "./routes/user.routes";
 import leaderboardRoutes from "./routes/leaderboard.routes";
@@ -30,6 +30,9 @@ app.use(express.json());
 */
 app.use("/api/users", userRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
 
 /*
   🔹 4️⃣ Global Error Handler

@@ -4,6 +4,14 @@ import time
 
 API_BASE_URL = "http://localhost:8000/api/leaderboard"
 
+# Fetch all valid user IDs once
+def get_valid_users():
+    response = requests.get(f"{API_BASE_URL}/top")
+    data = response.json()
+    return [player["user_id"] for player in data["data"]]
+
+valid_users = get_valid_users()
+
 def submit_score(user_id):
     score = random.randint(100, 10000)
     requests.post(
@@ -13,8 +21,6 @@ def submit_score(user_id):
 
 def get_top_players():
     response = requests.get(f"{API_BASE_URL}/top")
-    print("Status:", response.status_code)
-    print("Raw:", response.text)
     return response.json()
 
 def get_user_rank(user_id):
@@ -23,7 +29,7 @@ def get_user_rank(user_id):
 
 if __name__ == "__main__":
     while True:
-        user_id = random.randint(1, 103)  # based on your max ID
+        user_id = random.choice(valid_users)
         submit_score(user_id)
         print(get_top_players())
         print(get_user_rank(user_id))
